@@ -1,6 +1,6 @@
-########
-###P1###
-########
+# AWS re/Start project
+
+## Part 1
 
 1. Automatizador de subida de archivos a Amazon S3
 Objetivo
@@ -79,9 +79,7 @@ Salida del programa
 El script genera un archivo:
 aws_inventory.json
 
-########
-###P2###
-########
+## Part 2
 8. Pipeline simple S3 → procesamiento
 Servicios:
 S3
