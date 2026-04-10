@@ -13,7 +13,6 @@ def connect_s3():
 
 def upload_file(s3_name: str = None):
     print("\n--- 1.- Subir Archivo -------------")
-    print("\n--- 2.- Listar Objetos ------------")
 #First select file 
     local_path = input("Nombre del Archivo: ").strip()
     local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), local_path) 
