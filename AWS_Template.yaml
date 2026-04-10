@@ -1,0 +1,148 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Lab template — VPC with Internet Gateway, Security Group,
+  a private subnet, and 3 T3.micro EC2 instances.
+
+# -- Parameters -----------------------------------------------------------------
+Parameters:
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+    Description: Latest Amazon Linux 2 AMI (auto-resolved)
+
+# -- Resources -----------------------------------------------------------------
+Resources:
+
+  # -- Bucket ------------------------------------------------------------------
+  Bucket:
+    Type: AWS::S3::Bucket
+
+  # -- VPC ---------------------------------------------------------------------
+  LabVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: lab-vpc
+
+  # -- Internet Gateway --------------------------------------------------------
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: lab-igw
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref LabVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # -- Private Subnet ----------------------------------------------------------
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref LabVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: lab-private-subnet
+
+  # -- Route Table (private — no route to IGW) ---------------------------------
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref LabVPC
+      Tags:
+        - Key: Name
+          Value: lab-private-rt
+
+  PrivateSubnetAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      RouteTableId: !Ref PrivateRouteTable
+
+  # -- Security Group (SSH from anywhere) --------------------------------------
+  LabSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH from anywhere
+      VpcId: !Ref LabVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: lab-sg
+
+  # -- EC2 Instances (3 x T3.micro in private subnet) --------------------------
+  EC2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PrivateSubnet
+      SecurityGroupIds:
+        - !Ref LabSecurityGroup
+      Tags:
+        - Key: Name
+          Value: lab-instance-1
+
+  EC2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PrivateSubnet
+      SecurityGroupIds:
+        - !Ref LabSecurityGroup
+      Tags:
+        - Key: Name
+          Value: lab-instance-2
+
+  EC2Instance3:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: !Ref LatestAmiId
+      SubnetId: !Ref PrivateSubnet
+      SecurityGroupIds:
+        - !Ref LabSecurityGroup
+      Tags:
+        - Key: Name
+          Value: lab-instance-3
+
+# -- Outputs -------------------------------------------------------------------
+Outputs:
+  VPCId:
+    Description: VPC ID
+    Value: !Ref LabVPC
+
+  PrivateSubnetId:
+    Description: Private Subnet ID
+    Value: !Ref PrivateSubnet
+
+  SecurityGroupId:
+    Description: Security Group ID
+    Value: !Ref LabSecurityGroup
+
+  Instance1Id:
+    Description: EC2 Instance 1 ID
+    Value: !Ref EC2Instance1
+
+  Instance2Id:
+    Description: EC2 Instance 2 ID
+    Value: !Ref EC2Instance2
+
+  Instance3Id:
+    Description: EC2 Instance 3 ID
+    Value: !Ref EC2Instance3
