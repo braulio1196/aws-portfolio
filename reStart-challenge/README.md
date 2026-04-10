@@ -1,10 +1,10 @@
 # AWS re/Start project
 
 ## Connection
-   1. En la consola primero ingrese sus credenciales para AWS
-        aws configure o vi ~/.aws/credentials
+   1. En la consola primero ingrese sus credenciales para AWS:  
+  aws configure o vi ~/.aws/credentials
   
-   2. Prueba la conexion con:
+   2. Prueba la conexion con:  
         aws sts get-caller-identity
     
 ### Prepara las variables de entorno en Bash
