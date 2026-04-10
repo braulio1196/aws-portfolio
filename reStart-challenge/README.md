@@ -1,7 +1,18 @@
 # AWS re/Start project
 
-## Part 1
+## Connection
+   1. En la consola primero ingrese sus credenciales para AWS
+        aws configure o vi ~/.aws/credentials
+  
+   2. Prueba la conexion con:
+        aws sts get-caller-identity
+    
+### Prepara las variables de entorno en Bash
+    export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) |
+    export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) |
+    export AWS_REGION=$(aws configure get region)
 
+## Part 1
 1. Automatizador de subida de archivos a Amazon S3
 Objetivo
 Crear un script en Python que suba automáticamente archivos locales a un bucket.
@@ -101,3 +112,5 @@ Objetivo:
 combinar:
 EC2 + S3
 guardar reporte en JSON
+
+
