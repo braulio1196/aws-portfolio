@@ -1,11 +1,41 @@
 # AWS re/Start project
+## En CodeSpace
+1. Nos movemos al directiorio Temporal 
+```
+cd /tmp
+```
+
+2. Descargamos y descomprimimos AWS CLI V2
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -o awscliv2.zip
+```
+
+3. Instalamos la CLI  
+```
+sudo ./aws/install
+```
+
+4. Limpiamos el directorio
+```
+rm -rf awscliv2.zip aws
+```
+
+5. Verificamos la Installacion
+```
+aws --version   
+```
 
 ## Connection
    1. En la consola primero ingrese sus credenciales para AWS:  
+```
   aws configure o vi ~/.aws/credentials
-  
-   2. Prueba la conexion con:  
-        aws sts get-caller-identity
+```
+
+   2. Prueba la conexion con:
+```
+   aws sts get-caller-identity
+```
     
 ### Prepara las variables de entorno en Bash
     export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) |
@@ -13,17 +43,17 @@
     export AWS_REGION=$(aws configure get region)
 
 ## Part 1
-1. Automatizador de subida de archivos a Amazon S3
-Objetivo
-Crear un script en Python que suba automáticamente archivos locales a un bucket.
-Servicios involucrados
-Amazon S3
-boto3
+1. Automatizador de subida de archivos a Amazon S3  
+Objetivo  
+   Crear un script en Python que suba automáticamente archivos locales a un bucket.  
+Servicios involucrados  
+   Amazon S3  
+   boto3  
 Funcionalidad del proyecto
-El script debe:
-Subir un archivo
-Listar archivos en el bucket
-Descargar un archivo
+El script debe:  
+   Subir un archivo  
+   Listar archivos en el bucket  
+   Descargar un archivo  
 
 2. Sistema automático de backups a S3
 Objetivo
